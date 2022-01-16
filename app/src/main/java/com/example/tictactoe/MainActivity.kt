@@ -4,41 +4,77 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import com.example.tictactoe.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private val playerO : Int = 0
-    private val playerX : Int = 1
+    enum class Turn {
+        NOUGHT,
+        CROSS
+    }
 
-    private val activePlayer = playerO
+    private var firstTurn = Turn.NOUGHT
+    private var currentTurn = Turn.NOUGHT
+
+    private var boardList = mutableListOf<Button>()
+
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val btn01: Button = findViewById(R.id.btn_01)
-        val btn02: Button = findViewById(R.id.btn_02)
-        val btn03: Button = findViewById(R.id.btn_03)
-        val btn04: Button = findViewById(R.id.btn_04)
-        val btn05: Button = findViewById(R.id.btn_05)
-        val btn06: Button = findViewById(R.id.btn_06)
-        val btn07: Button = findViewById(R.id.btn_07)
-        val btn08: Button = findViewById(R.id.btn_08)
-        val btn09: Button = findViewById(R.id.btn_09)
+        initBoard()
 
-        btn01.setOnClickListener { markBox() }
-        btn02.setOnClickListener { markBox() }
-        btn03.setOnClickListener { markBox() }
-        btn04.setOnClickListener { markBox() }
-        btn05.setOnClickListener { markBox() }
-        btn06.setOnClickListener { markBox() }
-        btn07.setOnClickListener { markBox() }
-        btn08.setOnClickListener { markBox() }
-        btn09.setOnClickListener { markBox() }
     }
 
-    private fun markBox() {
+    private fun initBoard() {
+        boardList.add(binding.btn01)
+        boardList.add(binding.btn02)
+        boardList.add(binding.btn03)
+        boardList.add(binding.btn04)
+        boardList.add(binding.btn05)
+        boardList.add(binding.btn06)
+        boardList.add(binding.btn07)
+        boardList.add(binding.btn08)
+        boardList.add(binding.btn09)
+    }
 
+    companion object{
+        const val NOUGHT = "O"
+        const val CROSS = "X"
+    }
 
+    fun markBoard(view: View) {
+        if (view !is Button) return
+        addToBoard(view)
+    }
+
+    private fun addToBoard(button: Button) {
+
+        if(button.text != "") return
+
+        if(currentTurn == Turn.NOUGHT){
+            button.text = NOUGHT
+            currentTurn = Turn.CROSS
+        }
+        else if(currentTurn == Turn.CROSS){
+            button.text = CROSS
+            currentTurn = Turn.NOUGHT
+        }
+        setTurnLabel()
+    }
+
+    private fun setTurnLabel() {
+        var turnText = ""
+        if(currentTurn == Turn.CROSS){
+            turnText = "Turn $CROSS"
+        }
+        else if(currentTurn == Turn.NOUGHT){
+            turnText = "Turn $NOUGHT"
+        }
+        
+        binding.turnText.text = turnText
     }
 }
